@@ -1,2 +1,0 @@
-ninja: Entering directory `/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/armeabi_v7aDebug/arm64-v8a'
-ninja: no work to do.

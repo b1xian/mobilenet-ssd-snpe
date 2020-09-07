@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/arm64_v8aDebug/arm64-v8a",
-  "command": "/Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=aarch64-none-linux-android --gcc-toolchain=/Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/sysroot  -Dsnpedemo_EXPORTS -I../../../../src/main/jni/include -isystem /Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/sources/cxx-stl/llvm-libc++/include -isystem /Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/sources/android/support/include -isystem /Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/sources/cxx-stl/llvm-libc++abi/include  -isystem /Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17/sysroot/usr/include/aarch64-linux-android -D__ANDROID_API__=23 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -frtti -fexceptions -std=c++11 -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/snpedemo.dir/src/main/jni/cpp/snpe_engine_jni.cpp.o -c /Users/v_guojinlong/Desktop/test_snpe_demo/android/app/src/main/jni/cpp/snpe_engine_jni.cpp",
-  "file": "/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/src/main/jni/cpp/snpe_engine_jni.cpp"
-}
-]

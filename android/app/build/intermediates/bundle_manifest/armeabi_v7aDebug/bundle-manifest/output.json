@@ -1,1 +1,0 @@
-[{"outputType":{"type":"BUNDLE_MANIFEST"},"apkData":{"type":"MAIN","splits":[],"versionCode":1,"versionName":"1.0","enabled":true,"outputFile":"app-armeabi_v7a-debug.apk","fullName":"armeabi_v7aDebug","baseName":"armeabi_v7a-debug","dirName":""},"path":"AndroidManifest.xml","properties":{"packageId":"com.baidu.snpe","split":"","minSdkVersion":"23"}}]
