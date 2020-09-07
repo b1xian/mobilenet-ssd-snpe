@@ -1,0 +1,77 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.baidu.snpe"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+//            abiFilters "armeabi-v7a"
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_TOOLCHAIN=clang",
+                        "-DANDROID_ARM_NEON=TRUE",
+                        "-DANDROID_STL=c++_shared",
+                        "-DCMAKE_BUILD_TYPE=Debug"
+
+                cppFlags "-frtti"
+                cppFlags "-fexceptions"
+                cppFlags "-std=c++11"
+            }
+        }
+        minSdkVersion 23
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+        }
+    }
+    sourceSets.main {
+        jni.srcDirs = ['src/main/jni/cpp']
+        jniLibs.srcDirs = ['src/main/jni-libs']
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions 'abi'
+    productFlavors {
+        armeabi_v7a {
+            dimension = 'abi'
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
+        }
+        arm64_v8a {
+            dimension = 'abi'
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+        }
+    }
+//    packagingOptions {
+//        doNotStrip "*/armeabi-v7a/*.so"
+//        doNotStrip "*/arm64-v8a/*.so"
+//    }
+    repositories {
+        flatDir {
+            dirs 'lib'
+        }
+    }
+}
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'lib')
+}

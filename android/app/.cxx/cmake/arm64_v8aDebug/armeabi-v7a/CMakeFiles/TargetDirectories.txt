@@ -1,0 +1,3 @@
+/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/arm64_v8aDebug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/arm64_v8aDebug/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/arm64_v8aDebug/armeabi-v7a/CMakeFiles/snpedemo.dir

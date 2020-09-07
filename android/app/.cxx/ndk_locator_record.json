@@ -1,0 +1,37 @@
+{
+  "ndkFolder": "/Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17",
+  "messages": [
+    {
+      "level": "INFO",
+      "message": "android.ndkVersion from module build.gradle is not set"
+    },
+    {
+      "level": "INFO",
+      "message": "ndk.dir in local.properties is /Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17"
+    },
+    {
+      "level": "INFO",
+      "message": "ANDROID_NDK_HOME environment variable is not set"
+    },
+    {
+      "level": "INFO",
+      "message": "sdkFolder is /Users/v_guojinlong/Desktop/developer/sdk/android"
+    },
+    {
+      "level": "INFO",
+      "message": "NDK side-by-side folder from sdkFolder /Users/v_guojinlong/Desktop/developer/sdk/android/ndk does not exist"
+    },
+    {
+      "level": "INFO",
+      "message": "Considering /Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17 by ndk.dir"
+    },
+    {
+      "level": "INFO",
+      "message": "Considering /Users/v_guojinlong/Desktop/developer/sdk/android/ndk-bundle in SDK ndk-bundle folder"
+    },
+    {
+      "level": "INFO",
+      "message": "Found requested ndk.dir (/Users/v_guojinlong/Desktop/developer/ndk17/android-ndk-r17) which has version 17.0.4754217"
+    }
+  ]
+}

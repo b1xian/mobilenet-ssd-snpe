@@ -1,0 +1,7 @@
+Executable : /Users/v_guojinlong/Desktop/developer/sdk/android/cmake/3.10.2.4988404/bin/ninja
+arguments : 
+-C
+/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/armeabi_v7aDebug/arm64-v8a
+snpedemo
+jvmArgs : 
+

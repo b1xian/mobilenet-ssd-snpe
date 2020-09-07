@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/build/intermediates/res/merged/armeabi_v7a/debug/layout_main.xml.flat",
+        "source": "/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/src/main/res/layout/main.xml"
+    },
+    {
+        "merged": "/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/build/intermediates/res/merged/armeabi_v7a/debug/raw_test_resized.jpg.flat",
+        "source": "/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/src/main/res/raw/test_resized.jpg"
+    }
+]

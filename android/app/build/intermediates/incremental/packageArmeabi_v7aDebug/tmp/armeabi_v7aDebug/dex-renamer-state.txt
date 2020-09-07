@@ -1,0 +1,4 @@
+#Mon Sep 07 17:00:40 CST 2020
+base.0=/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/build/intermediates/dex/armeabi_v7aDebug/mergeProjectDexArmeabi_v7aDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

@@ -1,0 +1,2 @@
+rootProject.name='snpe_jni'
+include ':app'

@@ -1,0 +1,31 @@
+ninja: Entering directory `/Users/v_guojinlong/Desktop/test_snpe_demo/android/app/.cxx/cmake/armeabi_v7aDebug/armeabi-v7a'
+[1/2] Building CXX object CMakeFiles/snpedemo.dir/src/main/jni/cpp/snpe_engine_jni.cpp.o
+In file included from ../../../../src/main/jni/cpp/snpe_engine_jni.cpp:16:
+In file included from ../../../../src/main/jni/include/SNPE/SNPEBuilder.hpp:12:
+In file included from ../../../../src/main/jni/include/SNPE/SNPE.hpp:15:
+../../../../src/main/jni/include/DlSystem/DlOptional.hpp:176:27: warning: 'GetReference<zdl::DlSystem::StringList>' has a non-throwing exception specification but can still throw [-Wexceptions]
+      if (!isReference()) throw std::bad_exception();
+                          ^
+../../../../src/main/jni/include/DlSystem/DlOptional.hpp:155:46: note: in instantiation of function template specialization 'zdl::DlSystem::Optional<zdl::DlSystem::StringList>::GetReference<zdl::DlSystem::StringList>' requested here
+   const T& operator*() const { return this->GetReference(); }
+                                             ^
+../../../../src/main/jni/cpp/snpe_engine_jni.cpp:89:27: note: in instantiation of member function 'zdl::DlSystem::Optional<zdl::DlSystem::StringList>::operator*' requested here
+    const auto &strList = *strList_opt;
+                          ^
+../../../../src/main/jni/include/DlSystem/DlOptional.hpp:175:71: note: function declared non-throwing here
+   typename std::enable_if<std::is_same<U, Q>::value, const Q&>::type GetReference() const noexcept {
+                                                                      ^                    ~~~~~~~~
+../../../../src/main/jni/include/DlSystem/DlOptional.hpp:176:27: warning: 'GetReference<zdl::DlSystem::TensorShape>' has a non-throwing exception specification but can still throw [-Wexceptions]
+      if (!isReference()) throw std::bad_exception();
+                          ^
+../../../../src/main/jni/include/DlSystem/DlOptional.hpp:155:46: note: in instantiation of function template specialization 'zdl::DlSystem::Optional<zdl::DlSystem::TensorShape>::GetReference<zdl::DlSystem::TensorShape>' requested here
+   const T& operator*() const { return this->GetReference(); }
+                                             ^
+../../../../src/main/jni/cpp/snpe_engine_jni.cpp:91:30: note: in instantiation of member function 'zdl::DlSystem::Optional<zdl::DlSystem::TensorShape>::operator*' requested here
+    const auto &inputShape = *inputDims_opt;
+                             ^
+../../../../src/main/jni/include/DlSystem/DlOptional.hpp:175:71: note: function declared non-throwing here
+   typename std::enable_if<std::is_same<U, Q>::value, const Q&>::type GetReference() const noexcept {
+                                                                      ^                    ~~~~~~~~
+2 warnings generated.
+[2/2] Linking CXX shared library ../../../../build/intermediates/cmake/armeabi_v7aDebug/obj/armeabi-v7a/libsnpedemo.so

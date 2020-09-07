@@ -1,0 +1,7 @@
+int id buttonDetect 0x7f010000
+int id buttonDetectGPU 0x7f010001
+int id buttonImage 0x7f010002
+int id imageView 0x7f010003
+int layout main 0x7f020000
+int raw test_resized 0x7f030000
+int string app_name 0x7f040000
