@@ -12,8 +12,8 @@ android {
         versionName "1.0"
 
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a"
-//            abiFilters "armeabi-v7a"
+//            abiFilters "armeabi-v7a", "arm64-v8a"
+            abiFilters "armeabi-v7a"
         }
         externalNativeBuild {
             cmake {
@@ -62,15 +62,7 @@ android {
             }
         }
     }
-//    packagingOptions {
-//        doNotStrip "*/armeabi-v7a/*.so"
-//        doNotStrip "*/arm64-v8a/*.so"
-//    }
-    repositories {
-        flatDir {
-            dirs 'lib'
-        }
-    }
+
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'lib')

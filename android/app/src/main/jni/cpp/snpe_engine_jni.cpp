@@ -4,6 +4,9 @@
 
 #include <jni.h>
 
+#include <fstream>
+#include <stdio.h>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -57,14 +60,14 @@ device, jobjectArray outputTensorNameArray) {
     jstring jstr;
     const char *outputTenserName;
     jsize len = env->GetArrayLength(outputTensorNameArray);
-    zdl::DlSystem::StringList outputTensors(len);
     __android_log_print(ANDROID_LOG_INFO, TAG, "num of output tensor:%d", len);
+    zdl::DlSystem::StringList outputTensors(len);
     for (int i = 0; i < len; i++) {
         jobject jo = env->GetObjectArrayElement(outputTensorNameArray, i);
         jstr = (jstring) jo;
         outputTenserName = env->GetStringUTFChars(jstr, JNI_FALSE);
-        __android_log_print(ANDROID_LOG_INFO, TAG, "add output tensor:%s", outputTenserName);
         outputTensors.append(outputTenserName);
+        __android_log_print(ANDROID_LOG_INFO, TAG, "add output tensor : %s", outputTenserName);
     }
 
     zdl::SNPE::SNPEBuilder snpeBuilder(container.get());
@@ -100,6 +103,9 @@ outputTensorNameArray) {
                 zdl::DlSystem::getLastErrorString());
     }
 
+    std::ofstream fout("/data/local/tmp/detection_out.txt");
+    std::ofstream fout2("/data/local/tmp/compare_out.txt");
+
     jstring jstr;
     const char *outputTenserName;
     jsize len = env->GetArrayLength(outputTensorNameArray);
@@ -109,9 +115,23 @@ outputTensorNameArray) {
     for (int i = 0; i < len; i++) {
         jobject jo = env->GetObjectArrayElement(outputTensorNameArray, i);
         jstr = (jstring) jo;
-        outputTenserName = env->GetStringUTFChars(jstr, JNI_FALSE);
+        const char* outputTenserName = env->GetStringUTFChars(jstr, JNI_FALSE);
         __android_log_print(ANDROID_LOG_INFO, TAG, "collect output tensor:%s", outputTenserName);
         auto tensorPtr = outputTensorMap.getTensor(outputTenserName);
+
+        if (strcmp(outputTenserName, "detection_out") != 0) {
+            fout2 << outputTenserName << std::endl;
+            int k = 0;
+            for(auto it = tensorPtr->cbegin(); it!=tensorPtr->cend();it++)
+            {
+                if (k < 1000) {
+                    fout2 << *it << std::endl;
+                }
+                k++;
+            }
+            continue;
+        }
+
         int tensorSize = tensorPtr->getSize();
         __android_log_print(ANDROID_LOG_INFO, TAG, "tensor size:%d", tensorSize);
         jfarr = env->NewFloatArray(tensorSize);
@@ -120,11 +140,14 @@ outputTensorNameArray) {
         for(auto it = tensorPtr->cbegin(); it!=tensorPtr->cend();it++)
         {
             buf[j++] = *it;
+            fout << *it << std::endl;
+            __android_log_print(ANDROID_LOG_INFO, TAG, "%f", *it);
         }
         env->SetFloatArrayRegion(jfarr, 0, tensorSize, buf);
         env->SetObjectArrayElement(jObjectArr, i, jfarr);
     }
-
+    fout.close();
+    fout2.close();
     return jObjectArr;
 }
 

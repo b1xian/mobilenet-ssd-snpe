@@ -26,7 +26,6 @@ def main():
     f = open(detection_out, 'r')
     lines = f.readlines()
     f.close()
-    print(len(lines))
     for i in range(0, len(lines), 7):
         out = np.asarray(lines[i + 1:i + 7], dtype=float)
 
@@ -38,6 +37,7 @@ def main():
         h = int(out[5] * height - y)
         draw_img = cv2.putText(draw_img, str(label) + "%.2f" % prob, (x,y+20), font, 0.8, (0,255,0), 2)
         draw_img = cv2.rectangle(draw_img, (x,y), (x+w,y+h), (0,255,0), 2)
+        print("label:{0}, prob:{1}, bbox:{2},{3},{4},{5}".format(label, prob, x, y, x+w, y+h))
 
     cv2.imwrite('./show_result.jpg', draw_img)
 

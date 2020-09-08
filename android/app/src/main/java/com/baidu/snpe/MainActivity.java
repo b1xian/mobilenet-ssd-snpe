@@ -7,7 +7,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.content.res.AssetManager;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -45,7 +48,7 @@ public class MainActivity extends Activity
         Log.e(TAG, "set dsp env successed!");
 
 
-        String modelName = "mobilenet_iter_73000.dlc";
+        String modelName = "mobilenet_iter_73000_int8.dlc";
         int device = deviceMap.get("DSP");
         Log.i(TAG , "modelName:" + modelName);
         byte[] modelMem = getAssertFileMem(getAssets(), modelName);
@@ -54,7 +57,25 @@ public class MainActivity extends Activity
         }
         int modelLength = modelMem.length;
         Log.i(TAG , "modelLength:" + modelLength);
-        String[] outputTensorNameArray = new String[]{"detection_out"};
+        String[] outputTensorNameArray = new String[]{
+//                "conv0/scale.conv0",
+//                "conv0/relu.conv0",
+//                "conv1/dw/scale.conv1/dw",
+//                "conv1/dw/relu.conv1/dw",
+//                "conv1/scale.conv1",
+//                "conv1/relu.conv1",
+//                "conv2/dw/scale.conv2/dw",
+//                "conv2/dw/relu.conv2/dw",
+//                "conv2/scale.conv2",
+//                "conv2/relu.conv2",
+//                "conv3/dw/scale.conv3/dw",
+//                "conv3/dw/relu.conv3/dw",
+//                "conv3/scale.conv3",
+//                "conv3/relu.conv3",
+//                "conv4/dw/scale.conv4/dw",
+//                "conv4/dw/relu.conv4/dw",
+                "detection_out"
+        };
         boolean ret_init = snpeEngine.init(modelLength, modelMem, device, outputTensorNameArray);
         if (!ret_init)
         {
@@ -63,15 +84,44 @@ public class MainActivity extends Activity
         }
         Log.i(TAG, "snpeEngine Init successed");
 
-        String imgName = "test_resized.raw";
+        String imgName = "1.raw";
         byte[] imgBytes = getAssertFileMem(getAssets(), imgName);
         float[][] detect_res = snpeEngine.detect(imgBytes, outputTensorNameArray);
-        for (int i = 0; i < detect_res.length; i++) {
-            float[] res = detect_res[i];
-            for (int j = 0; j < res.length; j++) {
-                System.out.println(res[j]);
+//        String write_file = "/storage/emulated/0/vast/detection_out.txt";
+//        writeDetectResult(detect_res, write_file);
+    }
+
+    private void writeDetectResult (float[][] detect_res, String write_file) {
+        String writeResultFileName = "";
+
+        BufferedWriter bw = null;
+        try {
+            File file = new File(writeResultFileName);
+            if (!file.exists()) {
+                System.out.println(writeResultFileName);
+                file.createNewFile();
+            }
+            file.setWritable(true);
+            bw = new BufferedWriter(new FileWriter(file));
+            for (int i = 0; i < detect_res.length; i++) {
+                float[] res = detect_res[i];
+                for (int j = 0; j < res.length; j++) {
+                    System.out.println(res[j]);
+                    bw.write(String.valueOf(res[j]));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+
     }
 
 
