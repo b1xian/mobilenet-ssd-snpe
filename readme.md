@@ -65,4 +65,9 @@ nohup snpe-dlc-quantize --debug3 \
 ```
 
 **run mobilenet-ssd with snpe dsp**  
-project: ./android 
+JNI:  see project ./android 
+native: 
+```bash
+bash build_arm.sh
+bash run_example.sh
+```
