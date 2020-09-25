@@ -67,7 +67,26 @@ nohup snpe-dlc-quantize --debug3 \
 **run mobilenet-ssd with snpe dsp**  
 JNI:  see project ./android   
 native: 
+
 ```bash
 bash build_arm.sh
 bash run_example.sh
-```
+
+
+*****************************************************
+*********** NOTE 1: runing run_example.sh************
+*****************************************************
+
+On soc SA8155P, with problem about segmentation fault. 
+Solution: 
+copy library “libc++_shared” to "/system/lib" 
+
+*****************************************************
+********* NOTE 2: cross complie *********************
+*****************************************************
+
+android-ndk-r21d with problem about lirary "libc++.so" and some undefined reference.
+Solution:
+delete library "libc++.so" from "./lib/snpe/armv7a-android"  
+
+
