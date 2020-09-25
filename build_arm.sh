@@ -37,7 +37,7 @@ if [ ! -d $DEMO_DIR ]; then
     mkdir -p $DEMO_DIR
 fi
 cp build/$BUILD_DIR/test-mobilenet-ssd $DEMO_DIR
-#cp model/mobilenet_iter_73000_int8.dlc $DEMO_DIR
-#cp model/mobilenet_iter_73000.dlc $DEMO_DIR
-#cp data/VOC_raw/1.raw $DEMO_DIR
-#cp lib/snpe/armv7a-android/* $DEMO_DIR
+cp model/mobilenet_iter_73000_int8.dlc $DEMO_DIR
+cp model/mobilenet_iter_73000.dlc $DEMO_DIR
+cp data/VOC_raw/1.raw $DEMO_DIR
+cp lib/snpe/armv7a-android/* $DEMO_DIR
