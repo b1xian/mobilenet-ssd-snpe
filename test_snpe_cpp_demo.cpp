@@ -35,8 +35,8 @@ zdl::DlSystem::Runtime_t checkRuntime()
     static zdl::DlSystem::Version_t Version = zdl::SNPE::SNPEFactory::getLibraryVersion();
     static zdl::DlSystem::Runtime_t Runtime;
     std::cout << "SNPE Version: " << Version.asString().c_str() << std::endl; //Print Version number
-    
-    Runtime = zdl::DlSystem::Runtime_t::CPU;
+
+    Runtime = zdl::DlSystem::Runtime_t::DSP;
     return Runtime;
 }
 
@@ -88,8 +88,9 @@ std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNP
 int main(int argc, char** argv)
 {
 
+    std::cout << "into main." << std::endl;
     if (argc < 3) {
-        cout << "parameters required: <model_name> <raw_img_path>" << endl;
+        std::cout << "parameters required: <model_name> <raw_img_path>" << std::endl;
         return -1;
     }
 
@@ -97,7 +98,7 @@ int main(int argc, char** argv)
     cout << "model_name:" << model_name << endl;
     string raw_img_path = argv[2];
     cout << "raw_img_path path:" << raw_img_path << endl;
-    
+
     static zdl::DlSystem::RuntimeList runtimeList;
     static zdl::DlSystem::Runtime_t runtime = checkRuntime();
     runtimeList.add(runtime);
@@ -113,7 +114,7 @@ int main(int argc, char** argv)
        std::cerr << "Error while opening the container file." << std::endl;
        return EXIT_FAILURE;
     }
- 
+
     snpe = setBuilderOptions(container, runtimeList);
     if (container == nullptr)
     {
@@ -122,9 +123,9 @@ int main(int argc, char** argv)
 
     const zdl::DlSystem::Optional<zdl::DlSystem::StringList> &outputTensorNames = snpe->getOutputTensorNames();
     cout << "output tensor name:" <<  (*outputTensorNames).at(0) << endl;
-	
 
-    
+
+
     //读取图片
     std::unique_ptr<zdl::DlSystem::ITensor> input;
     const auto &strList_opt = snpe->getInputTensorNames();
