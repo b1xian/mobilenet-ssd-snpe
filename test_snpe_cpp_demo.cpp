@@ -26,7 +26,32 @@
 
 #include "util/Util.hpp"
 
+#include <chrono>
+#include <stack>
 using namespace std;
+using namespace std::chrono;
+
+class Timer{
+  public:
+    std::stack<high_resolution_clock::time_point> tictoc_stack;
+  void tic(){
+    high_resolution_clock::time_point t1=high_resolution_clock::now();
+    tictoc_stack.push(t1);
+  }
+  double toc(std::string msg="",bool flag=true ){
+    double diff = duration_cast<milliseconds> (high_resolution_clock::now() - tictoc_stack.top()).count();
+    if(msg.size()>0){
+      if(flag)
+      printf("%s Time Processing:%f ms\n",msg.c_str(),diff);
+    }
+    tictoc_stack.pop();
+    return diff;
+  }
+  void reset(){
+    tictoc_stack = std::stack<high_resolution_clock::time_point>();
+  }
+};
+
 
 
 // get runtime
@@ -143,11 +168,17 @@ int main(int argc, char** argv)
 
     //执行inference
     static zdl::DlSystem::TensorMap outputTensorMap;
-    bool res = snpe->execute(input.get(), outputTensorMap);
-    cout << "execute finish" <<endl;
-    if (!res) {
-        cout << "execute failed:" << zdl::DlSystem::getLastErrorString() << endl;
+    Timer timer;
+    timer.tic();
+    for(int j=0;j<100;j++){
+    	bool res = snpe->execute(input.get(), outputTensorMap);
+    	cout << "execute finish" <<endl;
+    	if (!res) {
+        	cout << "execute failed:" << zdl::DlSystem::getLastErrorString() << endl;
+    	}
     }
+    double diff = timer.toc("Total");
+    printf("diff======>:%f\n",diff/100);
     cout<< "write output:" << endl;
 	auto tensorPtr = outputTensorMap.getTensor((*outputTensorNames).at(0));
     std::ofstream fout("./detection_out.txt");
