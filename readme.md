@@ -55,6 +55,32 @@ generate raw list : data/VOC_raw_list.txt
 python image_to_raw.py
 ```  
 
+***********************************************
+** How to estimate runtime performance on dsp**  
+***********************************************
+
+=> adb push snpe-net-run to path /data/local/tmp/test_demo/
+
+=> cd /data/local/tmp/test_demo
+
+=> chmod 777 snpe-net-run 
+
+=> settimg library path:
+   export LD_LIBRARY_PATH=./${LD_LIBRARY_PATH}
+   export ADSP_LIBRARY_PTAH=./:${ADSP_LIBRATY_PATH}
+
+=> Then, need to do next step, Let's to show follow cmd:
+   snpe-net-run --container *.dlc --input_list list.txt --use_dsp 
+
+=> if running is successful, we can have one output folder.
+   
+=> adb pull output folder to your local snpe develop path. follow cmd:
+   snpe-diagview --input_log SNPEDiag.log --output LOGCSVFile > Log 2>&1   
+  (Note: find file SNPEDiag.log from output folder) 
+
+
+
+
 **quantize model to int8**
 ```bash
 nohup snpe-dlc-quantize --debug3 \
@@ -71,6 +97,7 @@ native:
 ```bash
 bash build_arm.sh
 bash run_example.sh
+```
 
 
 *****************************************************
