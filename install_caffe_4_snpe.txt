@@ -1,0 +1,93 @@
+
+. SNPE的Caffe安装教程及问题
+
+）SNPE依赖的环境：
+ubuntu16.04
+Python3.5
+Caffe源码（git clone https://github.com/BVLC/caffe.git）
+注意：
+1）SNPE中依赖的caffe有版本要求，因此clone后需要执行如下操作：
+cd caffe
+Get reset —hard 18b09e807a6e146750d84e89a961ba8e678830b4
+
+2）否则执行snpe如下的操作会出现错误，执行的步骤为：
+Source bin/envsetup.sh -c $CAFFE_DIR （其中：$CAFFE_DIR 为自己安装的caffe路径）
+
+) caffe依赖的内容：
+  sudo apt-get install libprotobuf-dev
+  sudo apt-get install libleveldb-dev
+  sudo apt-get install libsnappy-dev
+  sudo apt-get install libopencv-dev
+  sudo apt-get install libhdf5-serial-dev
+  sudo apt-get install protobuf-compiler
+  sudo apt-get install --no-install-recommends libboost-all-dev
+  sudo apt-get install libopenblas-dev liblapack-dev libatlas-base-dev
+  sudo apt-get install libflags-dev libgoogle-glog-dev liblmdb-dev
+  sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+  sudo apt-get install git cmake build-essential
+
+）pycaffe依赖的内容：
+   注意，snpe依赖的是python3.5，因此需要执行如下操作：
+   cd caffe/python
+   pip3 install -r requirements.txt  
+   如果执行pip中发生错误，需要打开requirements.txt 修改python-dateutil >=1.4,<2 为
+   python-dateutil 表示解除版本的限制
+
+）编译caffe：
+       1，cpu版本的编译：
+       - cp  Makefile.config.example Makefile.config
+       - vim Makefile.config, 修改内容如下：
+          取消： CPU_ONLY := 1 的注释
+        修改：PYTHON_INCLUDE := /usr/include/python2.7 \
+                  /usr/lib/python2.7/dist-packages/numpy/core/include 中python2.7为python3.5
+       修改：PYTHON_LIBRARIES := boost_python3 python3.5m   （修改前）                     
+                  PYTHON_LIBRARIES := boost_python-py35（修改后）
+     - vim Makefile，修改如下内容：
+         修改： PYTHON_LIBRARIES ?= boost_python python2.7 （修改前）
+                     PYTHON_LIBRARIES ?= boost_python python2.7 （修改后）
+    - vim Makeconfig.config, 修改如下的内容：
+       修改前：
+          INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include 
+          LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib 
+        修改后：
+         NCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial
+         LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/hdf5/serial
+    2，cpu的编译步骤：
+         make all
+         make test 
+         make runtest
+         make pycaffe
+    3，设置python的caffe环境：
+         Vim ～/.bashrc
+          加入： export PYTHONPATH=/home/你的登录名/caffe/python:$PYTHONPATH 
+      source ～/..bashrc 
+        执行：
+        python3 
+        import caffe
+
+
+）编译可能遇到的问题：
+
+1）执行make pycaffe 出现以下错误：
+
+CXX/LD -o python/caffe/_caffe.so python/caffe/_caffe.cpp /usr/bin/ld: cannot find -lpython3.5 collect2: error: ld returned 1 exit status Makefile:508: recipe for target 'python/caffe/_caffe.so' failed make: *** [python/caffe/_caffe.so] Error 1
+
+
+2）import caffe 出现下面错误：
+
+Ubuntu 16.04下安装Caffe解决 undefined symbol: _ZN5boost6python6detail11init_moduleER11PyModuleDefPFvvE
+
+解决方法：
+1）修改makefile中:
+ PYTHON_LIBRARIES ?= boost_python python2.7 更改为：PYTHON_LIBRARIES ?= boost_python python3.5
+2）修改Makefile.config 
+
+
+ 3） python3 
+执行：import caffe，发生如下的错误：
+
+raise ValueError, "Can't create weekday with n == 0”
+
+相关的库可能不匹配，执行：
+
+pip3 install python-dateutil --upgrade
