@@ -65,12 +65,9 @@ int main(int argc, char** argv)
 
     std::pair<int, float*> pair;
     int ret = engine->inference(input_mat, pair);
-    for (int i = 0; i< pair.first; i++) {
-        cout << pair.second[i] << endl;
-    }
+
     int output_len = pair.first;
     float* output_data = pair.second;
-
 
     std::vector<std::string> class_names =
             {"background", "aeroplane", "bicycle", "bird", "boat",
@@ -86,14 +83,8 @@ int main(int argc, char** argv)
         int y = int(output_data[i + 4] * height);
         int w = int(output_data[i + 5] * width - x);
         int h = int(output_data[i + 6] * height - y);
-        cout << label << endl;
-        cout << prob << endl;
-        cout << x << endl;
-        cout << y << endl;
-        cout << w << endl;
-        cout << h << endl;
 
-        cv::putText(mat, label, cv::Point(x, y), 0, 0.8, cv::Scalar(255,255,255), 2);
+        cv::putText(mat, label, cv::Point(x, y-5), 0, 0.8, cv::Scalar(255,0,255), 2);
         cv::rectangle(mat, cv::Point(x, y), cv::Point(x+w, y+h), cv::Scalar(0,255,0), 2);
     }
     cv::imwrite("./result.jpg", mat);
