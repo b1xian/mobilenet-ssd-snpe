@@ -1,5 +1,6 @@
 example of snpe with [mobilenet-ssd](https://github.com/chuanqi305/MobileNet-SSD)
-trained by [MobileNet-Caffe](https://github.com/shicai/MobileNet-Caffe)
+trained by [Caffe](https://github.com/weiliu89/caffe/tree/ssd)  
+caffe model [MobileNet-Caffe](https://github.com/shicai/MobileNet-Caffe)
 
 ├── CMakeLists.txt  
 ├── android  
