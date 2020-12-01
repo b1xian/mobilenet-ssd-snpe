@@ -55,7 +55,7 @@ case "${TARGET_INDEX}" in
     ;;
 esac
 
-DEMO_DIR=build/${TARGET}/test_demo
+DEMO_DIR=build/${TARGET}/test_snpe_demo
 rm -r ${DEMO_DIR}
 mkdir ${DEMO_DIR}
 
@@ -63,10 +63,10 @@ cp build/${TARGET}/test-mobilenet-ssd ${DEMO_DIR}
 cp model/mobilenet_iter_73000_int8.dlc ${DEMO_DIR}
 cp model/mobilenet_iter_73000.dlc ${DEMO_DIR}
 cp data/VOC_raw/1.raw ${DEMO_DIR}
-cp data/VOC_resize/9.jpg ${DEMO_DIR}
-cp third_party/snpe/lib/${TARGET}/* ${DEMO_DIR}
+cp data/VOC_resize/1.jpg ${DEMO_DIR}
+cp third_party/snpe/1.43/lib/${TARGET}/* ${DEMO_DIR}
 
-bin_path="/data/local/tmp/test_demo/"
+bin_path="/data/local/tmp/test_snpe_demo/"
 adb shell "rm -r ${bin_path}"
 adb push ${DEMO_DIR} /data/local/tmp/
 adb shell "chmod +x ${bin_path}/test-mobilenet-ssd"
@@ -75,6 +75,6 @@ adb shell "chmod +x ${bin_path}/test-mobilenet-ssd"
 #       && ./test-mobilenet-ssd mobilenet_iter_73000_int8.dlc 1.raw"
 adb shell "cd ${bin_path} \
        && export LD_LIBRARY_PATH=${bin_path}:${LD_LIBRARY_PATH} \
-       && ./test-mobilenet-ssd 0 mobilenet_iter_73000.dlc 9.jpg"
+       && ./test-mobilenet-ssd 2 mobilenet_iter_73000_int8.dlc 1.jpg"
 
 adb pull $bin_path"result.jpg" ./

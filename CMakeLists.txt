@@ -20,7 +20,8 @@ set(OPENCV_LIB opencv_calib3d opencv_highgui opencv_imgproc opencv_core libtiff 
 
 
 # ---------------snpe------------#
-set(SNPE_DIR ${THIRD_PARTY_DIR}/snpe)
+set(SNPE_VER 1.43)
+set(SNPE_DIR ${THIRD_PARTY_DIR}/snpe/${SNPE_VER})
 set(SNPE_INCLUDE_DIR ${SNPE_DIR}/include/zdl)
 message(${SNPE_INCLUDE_DIR})
 set(SNPE_LINK_DIR ${SNPE_DIR}/lib/${TARGET_OS}-${TARGET_ARCH})
