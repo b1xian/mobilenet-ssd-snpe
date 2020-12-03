@@ -34,12 +34,6 @@ int SnpeEngine::init(std::string infer_type, std::string model_path) {
         return -1;
     }
 
-    const auto &strList_opt = _engine->getInputTensorNames();
-    if (!strList_opt) throw std::runtime_error("Error obtaining Input tensor names");
-    const auto &strList = *strList_opt;
-    const auto &inputDims_opt = _engine->getInputDimensions(strList.at(0));
-    const auto &inputShape = *inputDims_opt;
-
     cout << "init success..." << endl;
     return 0;
 }
@@ -99,7 +93,7 @@ int SnpeEngine::inference(cv::Mat& input_mat, std::pair<int, float*>& pair) {
     const zdl::DlSystem::Optional<zdl::DlSystem::StringList> &outputTensorNames = _engine->getOutputTensorNames();
     auto itensor = _output_tensor_map.getTensor((*outputTensorNames).at(0));
     if (itensor == nullptr) {
-        cout << "output tensot is null : " << zdl::DlSystem::getLastErrorString() << endl;
+        cout << "output tensor is null : " << zdl::DlSystem::getLastErrorString() << endl;
         return -1;
     }
     auto itensor_shape = itensor->getShape();
@@ -111,8 +105,7 @@ int SnpeEngine::inference(cv::Mat& input_mat, std::pair<int, float*>& pair) {
     }
     float* output_data = (float*)malloc(sizeof(float) * output_len);
     int i = 0;
-    for(auto it = itensor->begin(); it!=itensor->end();it++)
-    {
+    for(auto it = itensor->begin(); it!=itensor->end();it++) {
         output_data[i++] = *it;
     }
     pair.first = output_len;

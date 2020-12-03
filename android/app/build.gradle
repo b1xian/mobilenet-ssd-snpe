@@ -66,4 +66,5 @@ android {
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'lib')
+//    provided files ('/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar')
 }

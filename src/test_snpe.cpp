@@ -38,7 +38,6 @@ cv::Mat normalize(cv::Mat& mat_src) {
 
 int main(int argc, char** argv)
 {
-    std::cout << "into main." << std::endl;
     if (argc < 3) {
         std::cout << "parameters required: <infer_type> <model_name> <img_path>" << std::endl;
         return -1;

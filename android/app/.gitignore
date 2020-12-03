@@ -1,4 +1,5 @@
 build/
+.cxx/
 .gradle/
 .idea/
 .DS_Store

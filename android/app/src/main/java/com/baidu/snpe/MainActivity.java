@@ -2,18 +2,24 @@ package com.baidu.snpe;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 import android.content.res.AssetManager;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity
@@ -48,7 +54,7 @@ public class MainActivity extends Activity
         Log.e(TAG, "set dsp env successed!");
 
 
-        String modelName = "mobilenet_iter_73000_int8.dlc";
+        String modelName = "mobilenet-ssd-model/mobilenet_iter_73000_int8.dlc";
         int device = deviceMap.get("DSP");
         Log.i(TAG , "modelName:" + modelName);
         byte[] modelMem = getAssertFileMem(getAssets(), modelName);
@@ -58,22 +64,6 @@ public class MainActivity extends Activity
         int modelLength = modelMem.length;
         Log.i(TAG , "modelLength:" + modelLength);
         String[] outputTensorNameArray = new String[]{
-//                "conv0/scale.conv0",
-//                "conv0/relu.conv0",
-//                "conv1/dw/scale.conv1/dw",
-//                "conv1/dw/relu.conv1/dw",
-//                "conv1/scale.conv1",
-//                "conv1/relu.conv1",
-//                "conv2/dw/scale.conv2/dw",
-//                "conv2/dw/relu.conv2/dw",
-//                "conv2/scale.conv2",
-//                "conv2/relu.conv2",
-//                "conv3/dw/scale.conv3/dw",
-//                "conv3/dw/relu.conv3/dw",
-//                "conv3/scale.conv3",
-//                "conv3/relu.conv3",
-//                "conv4/dw/scale.conv4/dw",
-//                "conv4/dw/relu.conv4/dw",
                 "detection_out"
         };
         boolean ret_init = snpeEngine.init(modelLength, modelMem, device, outputTensorNameArray);
@@ -84,21 +74,64 @@ public class MainActivity extends Activity
         }
         Log.i(TAG, "snpeEngine Init successed");
 
-        String imgName = "1.raw";
+        // load test_img_list
+//        String testImgfile = "face_dms_112_raw_list.txt";
+//        String testImgString = getAssertFileString(getAssets(), testImgfile);
+//        String[] testImgList = testImgString.split("\n");
+//        for (int i = 0; i < testImgList.length; i++) {
+//            System.out.println(testImgList[i]);
+//            System.out.println(testImgList[i]);
+//            String imgName = "face_dms_img_raw/" + testImgList[i];
+//            byte[] imgBytes = getAssertFileMem(getAssets(), imgName);
+//            float[][] detect_res = snpeEngine.detect(imgBytes, outputTensorNameArray);
+//        }
+        String imgName = "mobilenet-ssd-img/1.raw";
         byte[] imgBytes = getAssertFileMem(getAssets(), imgName);
         float[][] detect_res = snpeEngine.detect(imgBytes, outputTensorNameArray);
-//        String write_file = "/storage/emulated/0/vast/detection_out.txt";
+
+
+//        String write_file = "/data/local/tmp/detection_out.txt";
 //        writeDetectResult(detect_res, write_file);
+//        String drawImagePath = "/data/local/tmp/detection_out.jpg";
+//        drawSSDResult(imgBytes, detect_res, drawImagePath);
+    }
+
+    private void drawSSDResult(byte[] imgBytes, float[][] detect_res, String drawImagePath) {
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(10);
+        for (int i = 0; i< detect_res.length; i++) {
+            float[] detectTarget = detect_res[i];
+            int label = (int) detectTarget[1];
+            int x1 = (int) detectTarget[2];
+            int y1 = (int) detectTarget[3];
+            int x2 = (int) detectTarget[4];
+            int y2 = (int) detectTarget[5];
+            canvas.drawRect(x1, y1, x2, y2, paint);
+        }
+        File f = new File(drawImagePath);
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream out = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+            Log.i(TAG, "已经保存");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeDetectResult (float[][] detect_res, String write_file) {
-        String writeResultFileName = "";
-
         BufferedWriter bw = null;
         try {
-            File file = new File(writeResultFileName);
+            File file = new File(write_file);
             if (!file.exists()) {
-                System.out.println(writeResultFileName);
                 file.createNewFile();
             }
             file.setWritable(true);
@@ -124,8 +157,7 @@ public class MainActivity extends Activity
 
     }
 
-
-    private byte[] getAssertFileMem(AssetManager asm, String modelName) {
+    private ByteArrayOutputStream getAssertFileStream(AssetManager asm, String modelName) {
         InputStream inputStream = null;
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         byte buffer[] = new byte[1024];
@@ -153,7 +185,15 @@ public class MainActivity extends Activity
                 e.printStackTrace();
             }
         }
-        return outStream.toByteArray();
+        return outStream;
+    }
+
+    private byte[] getAssertFileMem(AssetManager asm, String modelName) {
+        return getAssertFileStream(asm, modelName).toByteArray();
+    }
+
+    private String getAssertFileString(AssetManager asm, String modelName) {
+        return getAssertFileStream(asm, modelName).toString();
     }
 
     byte[] getNV12(int inputWidth, int inputHeight, Bitmap scaled) {
@@ -212,3 +252,4 @@ public class MainActivity extends Activity
         }
     }
 }
+

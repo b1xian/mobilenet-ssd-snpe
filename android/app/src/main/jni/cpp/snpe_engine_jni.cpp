@@ -6,9 +6,12 @@
 
 #include <fstream>
 #include <stdio.h>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sys/time.h>
+#include <chrono>
 
 //snpe
 #include "DlContainer/IDlContainer.hpp"
@@ -27,7 +30,8 @@ const char *g_jni_class = "com/baidu/snpe/SnpeEngine";
 extern "C" {
 
 static std::unique_ptr<zdl::SNPE::SNPE> _engine;
-
+using std::chrono::high_resolution_clock;
+using std::chrono::milliseconds;
 
 jboolean init(JNIEnv *env, jobject thiz, jint modelSize, jbyteArray modelMem, jint
 device, jobjectArray outputTensorNameArray) {
@@ -72,6 +76,7 @@ device, jobjectArray outputTensorNameArray) {
 
     zdl::SNPE::SNPEBuilder snpeBuilder(container.get());
     _engine = snpeBuilder
+//            .setOutputLayers({})
             .setOutputTensors(outputTensors)
             .setRuntimeProcessorOrder(runtimeList)
             .build();
@@ -80,6 +85,10 @@ device, jobjectArray outputTensorNameArray) {
                             zdl::DlSystem::getLastErrorString());
         return JNI_FALSE;
     }
+    const auto &outnames = _engine->getOutputTensorNames();
+    __android_log_print(ANDROID_LOG_INFO, TAG, "model last output tensor name: : %s", (*outnames).at
+    (0));
+
 
     return JNI_TRUE;
 }
@@ -97,14 +106,17 @@ outputTensorNameArray) {
     std::copy(img_data, img_data + tensor_size, input->begin());
 
     static zdl::DlSystem::TensorMap outputTensorMap;
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    long start = time.tv_sec*1000 + time.tv_usec/1000;
     bool res = _engine->execute(input.get(), outputTensorMap);
+    gettimeofday(&time, NULL);
+    long end = time.tv_sec*1000 + time.tv_usec/1000;
+    __android_log_print(ANDROID_LOG_INFO, TAG, "snpe execute cost ms: %d", end - start);
     if (!res) {
         __android_log_print(ANDROID_LOG_INFO, TAG, "snpe execute error: %s",
                 zdl::DlSystem::getLastErrorString());
     }
-
-    std::ofstream fout("/data/local/tmp/detection_out.txt");
-    std::ofstream fout2("/data/local/tmp/compare_out.txt");
 
     jstring jstr;
     const char *outputTenserName;
@@ -115,39 +127,20 @@ outputTensorNameArray) {
     for (int i = 0; i < len; i++) {
         jobject jo = env->GetObjectArrayElement(outputTensorNameArray, i);
         jstr = (jstring) jo;
-        const char* outputTenserName = env->GetStringUTFChars(jstr, JNI_FALSE);
+        outputTenserName = env->GetStringUTFChars(jstr, JNI_FALSE);
         __android_log_print(ANDROID_LOG_INFO, TAG, "collect output tensor:%s", outputTenserName);
         auto tensorPtr = outputTensorMap.getTensor(outputTenserName);
-
-        if (strcmp(outputTenserName, "detection_out") != 0) {
-            fout2 << outputTenserName << std::endl;
-            int k = 0;
-            for(auto it = tensorPtr->cbegin(); it!=tensorPtr->cend();it++)
-            {
-                if (k < 1000) {
-                    fout2 << *it << std::endl;
-                }
-                k++;
-            }
-            continue;
-        }
-
         int tensorSize = tensorPtr->getSize();
         __android_log_print(ANDROID_LOG_INFO, TAG, "tensor size:%d", tensorSize);
         jfarr = env->NewFloatArray(tensorSize);
         int j = 0;
         jfloat* buf = new jfloat[tensorSize];
-        for(auto it = tensorPtr->cbegin(); it!=tensorPtr->cend();it++)
-        {
+        for(auto it = tensorPtr->cbegin(); it!=tensorPtr->cend();it++) {
             buf[j++] = *it;
-            fout << *it << std::endl;
-            __android_log_print(ANDROID_LOG_INFO, TAG, "%f", *it);
         }
         env->SetFloatArrayRegion(jfarr, 0, tensorSize, buf);
         env->SetObjectArrayElement(jObjectArr, i, jfarr);
     }
-    fout.close();
-    fout2.close();
     return jObjectArr;
 }
 
