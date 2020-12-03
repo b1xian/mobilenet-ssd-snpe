@@ -2,27 +2,6 @@ example of snpe with [mobilenet-ssd](https://github.com/chuanqi305/MobileNet-SSD
 trained by [Caffe](https://github.com/weiliu89/caffe/tree/ssd)  
 caffe model [MobileNet-Caffe](https://github.com/shicai/MobileNet-Caffe)
 
-├── CMakeLists.txt  
-├── android  
-├── include  
-├── lib  
-├── data  
-│   ├── VOC2007  
-│   ├── VOC_raw  
-│   ├── VOC_raw_list.txt  
-│   └── VOC_resize  
-├── model  
-│   ├── deploy.prototxt  
-│   ├── mobilenet_iter_73000.caffemodel  
-│   ├── mobilenet_iter_73000.dlc  
-│   ├── mobilenet_iter_73000_int8.dlc  
-└── util  
-├── test_snpe_cpp_demo.cpp  
-├── test-mobilenet-ssd-cpu  
-├── show_ssd_result.py  
-├── image_to_raw.py  
-├── readme.md  
-
 **build**
 ```bash
 ./build.sh
