@@ -1,4 +1,4 @@
-example of snpe with [mobilenet-ssd](https://github.com/chuanqi305/MobileNet-SSD)
+example of [snpe](https://developer.qualcomm.com/software/qualcomm-neural-processing-sdk) with [mobilenet-ssd](https://github.com/chuanqi305/MobileNet-SSD)
 trained by [Caffe](https://github.com/weiliu89/caffe/tree/ssd)  
 caffe model [MobileNet-Caffe](https://github.com/shicai/MobileNet-Caffe)
 
