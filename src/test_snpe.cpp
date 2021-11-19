@@ -81,6 +81,7 @@ int main(int argc, char** argv)
     std::pair<int, float*> pair;
     int ret = engine->inference(input_mat, output_mat);
     if (ret) {
+        delete engine;
         cerr << "inference failed!!!" << endl;
         return ret;
     }
