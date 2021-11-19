@@ -50,23 +50,43 @@ int main(int argc, char** argv)
     string img_path = argv[3];
     cout << "img_path path:" << img_path << endl;
 
+    int runtime = stoi(infer_type);
+    zdl::DlSystem::Runtime_t runtime_t;
+    switch (runtime) {
+        case 0:
+            runtime_t = zdl::DlSystem::Runtime_t::CPU_FLOAT32;
+        case 1:
+            runtime_t = zdl::DlSystem::Runtime_t::GPU_FLOAT32_16_HYBRID;
+        case 2:
+            runtime_t = zdl::DlSystem::Runtime_t::DSP_FIXED8_TF;
+        case 3:
+            runtime_t = zdl::DlSystem::Runtime_t::GPU_FLOAT16;
+        case 5:
+            runtime_t = zdl::DlSystem::Runtime_t::AIP_FIXED8_TF;
+        default:
+            runtime_t = zdl::DlSystem::Runtime_t::CPU_FLOAT32;
+    }
+
     // 构建引擎
     SnpeEngine* engine = new SnpeEngine();
-    engine->init(infer_type, model_name);
+    engine->init(runtime_t, model_name);
 
     // 读取图片
     cv::Mat mat = cv::imread(img_path);
     int width = mat.cols;
     int height = mat.rows;
-    int c = mat.channels();
 
     cv::Mat input_mat = normalize(mat);
-
+    cv::Mat output_mat;
     std::pair<int, float*> pair;
-    int ret = engine->inference(input_mat, pair);
+    int ret = engine->inference(input_mat, output_mat);
+    if (ret) {
+        cerr << "inference failed!!!" << endl;
+        return ret;
+    }
 
-    int output_len = pair.first;
-    float* output_data = pair.second;
+    int output_len = output_mat.channels() * output_mat.rows * output_mat.cols;
+    float* output_data = (float *)output_mat.data;
 
     std::vector<std::string> class_names =
             {"background", "aeroplane", "bicycle", "bird", "boat",
@@ -76,16 +96,16 @@ int main(int argc, char** argv)
             "sheep", "sofa", "train", "tvmonitor"};
 
     for (int i = 0; i < output_len; i += 7) {
-        std::string label = class_names[int(output_data[i+1])];
         float prob = output_data[i + 2];
         int x = int(output_data[i + 3] * width);
         int y = int(output_data[i + 4] * height);
         int w = int(output_data[i + 5] * width - x);
         int h = int(output_data[i + 6] * height - y);
-
-        cv::putText(mat, label, cv::Point(x, y-5), 0, 0.8, cv::Scalar(255,0,255), 2);
-        cv::rectangle(mat, cv::Point(x, y), cv::Point(x+w, y+h), cv::Scalar(0,255,0), 2);
+        std::string label(class_names[int(output_data[i+1])] + std::to_string(prob));
+        cv::putText(mat, label, cv::Point(x, y - 5), 0, 0.5, cv::Scalar(255,0,255), 2);
+        cv::rectangle(mat, cv::Point(x, y), cv::Point(x + w, y + h), cv::Scalar(0,255,0), 2);
     }
     cv::imwrite("./result.jpg", mat);
 
+    delete engine;
 }

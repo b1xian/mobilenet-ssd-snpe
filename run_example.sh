@@ -72,6 +72,8 @@ if [ "${TARGET}" = "linux-x86_64" ]; then
   cd ${DEMO_DIR}
   export LD_LIBRARY_PATH=${PWD}:${LD_LIBRARY_PATH}
   ./test-mobilenet-ssd 0 mobilenet_iter_73000_int8.dlc 1.jpg
+  cd -
+  cp ${DEMO_DIR}/result.jpg ./
 else
   bin_path="/data/local/tmp/test_snpe_demo/"
   adb shell "rm -r ${bin_path}"

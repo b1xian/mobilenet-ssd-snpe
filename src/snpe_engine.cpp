@@ -7,10 +7,9 @@ using namespace std;
 
 SnpeEngine::SnpeEngine() {}
 
-int SnpeEngine::init(std::string infer_type, std::string model_path) {
-
+int SnpeEngine::init(zdl::DlSystem::Runtime_t runtime_t, const std::string &model_path) {
     // 1.set runtime
-    int ret = setRuntime(infer_type);
+    int ret = setRuntime(runtime_t);
     if(ret != 0) {
         cout << "setRuntime error : " << zdl::DlSystem::getLastErrorString() << endl;
         return -1;
@@ -38,21 +37,18 @@ int SnpeEngine::init(std::string infer_type, std::string model_path) {
     return 0;
 }
 
-int SnpeEngine::setRuntime(std::string infer_type){
-    zdl::DlSystem::Runtime_t runtime_t;
 
-    if (infer_type == "1") {
-        runtime_t = zdl::DlSystem::Runtime_t::GPU_FLOAT32_16_HYBRID;
-    } else if (infer_type == "2") {
-        runtime_t = zdl::DlSystem::Runtime_t::DSP;
-    } else {
-        runtime_t = zdl::DlSystem::Runtime_t::CPU;
-    }
+SnpeEngine::~SnpeEngine() {
+    _engine.reset();
+    cout << "deinit success..." << endl;
+}
 
+int SnpeEngine::setRuntime(zdl::DlSystem::Runtime_t runtime_t){
     const char* runtime_string = zdl::DlSystem::RuntimeList::runtimeToString(runtime_t);
 
     if (!zdl::SNPE::SNPEFactory::isRuntimeAvailable(runtime_t) ||
-        (infer_type == "1" && !zdl::SNPE::SNPEFactory::isGLCLInteropSupported())) {
+        ((runtime_t == zdl::DlSystem::Runtime_t::GPU_FLOAT16 || runtime_t == zdl::DlSystem::Runtime_t::GPU_FLOAT32_16_HYBRID)
+        && !zdl::SNPE::SNPEFactory::isGLCLInteropSupported())) {
         cout << "SNPE runtime " <<  runtime_string << " not support" << endl;
         return -1;
     }
@@ -63,7 +59,7 @@ int SnpeEngine::setRuntime(std::string infer_type){
     return 0;
 }
 
-void SnpeEngine::build_tensor(cv::Mat& mat) {
+void SnpeEngine::build_tensor(const cv::Mat& mat) {
 
     zdl::DlSystem::Dimension dims[4];
     dims[0] = 1;
@@ -79,7 +75,7 @@ void SnpeEngine::build_tensor(cv::Mat& mat) {
     std::copy(src, src + mem_size, _input_tensor->begin());
 }
 
-int SnpeEngine::inference(cv::Mat& input_mat, std::pair<int, float*>& pair) {
+int SnpeEngine::inference(const cv::Mat& input_mat, cv::Mat& output_mat) {
     build_tensor(input_mat);
 
     bool ret = _engine->execute(_input_tensor.get(), _output_tensor_map);
@@ -100,16 +96,15 @@ int SnpeEngine::inference(cv::Mat& input_mat, std::pair<int, float*>& pair) {
     auto* dims = itensor_shape.getDimensions();
     size_t dim_count = itensor_shape.rank();
     int output_len = 1;
-    for (int i = 0; i< dim_count; i++) {
-        output_len *=dims[i];
+    for (unsigned int i = 0; i < dim_count; i++) {
+        output_len *= dims[i];
     }
-    float* output_data = (float*)malloc(sizeof(float) * output_len);
+    output_mat = cv::Mat({output_len, 1}, CV_32FC1);
+    float* output_data = (float *)output_mat.data;
     int i = 0;
     for(auto it = itensor->begin(); it!=itensor->end();it++) {
         output_data[i++] = *it;
     }
-    pair.first = output_len;
-    pair.second = output_data;
     return 0;
 }
 

@@ -18,14 +18,14 @@
 class SnpeEngine {
 public:
     SnpeEngine();
-    virtual ~SnpeEngine() = default;
+    ~SnpeEngine();
 
-    int init(std::string infer_type, std::string model_path);
-    int inference(cv::Mat& input_mat, std::pair<int, float*>& pair);
+    int init(zdl::DlSystem::Runtime_t runtime_t, const std::string &model_path);
+    int inference(const cv::Mat& input_mat, cv::Mat& output_mat);
 
 private:
-    int setRuntime(std::string infer_type);
-    void build_tensor(cv::Mat& mat);
+    int setRuntime(zdl::DlSystem::Runtime_t runtime_t);
+    void build_tensor(const cv::Mat& mat);
 
     // snpe model
     std::unique_ptr<zdl::SNPE::SNPE> _engine;
