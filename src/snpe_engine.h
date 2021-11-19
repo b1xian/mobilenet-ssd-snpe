@@ -1,9 +1,6 @@
 #ifndef VISION_SNPE_PREDICTOR_H
 #define VISION_SNPE_PREDICTOR_H
 
-#include <iostream>
-#include <memory>
-
 #include "DlContainer/IDlContainer.hpp"
 #include "DlSystem/DlEnums.hpp"
 #include "DlSystem/DlError.hpp"

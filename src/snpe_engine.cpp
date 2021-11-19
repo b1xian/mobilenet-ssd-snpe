@@ -1,7 +1,6 @@
 #include "snpe_engine.h"
 
 #include <iostream>
-#include <fstream>
 
 using namespace std;
 
@@ -80,7 +79,7 @@ int SnpeEngine::inference(const cv::Mat& input_mat, cv::Mat& output_mat) {
 
     bool ret = _engine->execute(_input_tensor.get(), _output_tensor_map);
     if (!ret) {
-        cout << "engine inference error : " << zdl::DlSystem::getLastErrorString() << endl;
+        cerr << "engine inference error : " << zdl::DlSystem::getLastErrorString() << endl;
         return -1;
     } else {
         cout << "engine inference success..." << endl;
@@ -89,7 +88,7 @@ int SnpeEngine::inference(const cv::Mat& input_mat, cv::Mat& output_mat) {
     const zdl::DlSystem::Optional<zdl::DlSystem::StringList> &outputTensorNames = _engine->getOutputTensorNames();
     auto itensor = _output_tensor_map.getTensor((*outputTensorNames).at(0));
     if (itensor == nullptr) {
-        cout << "output tensor is null : " << zdl::DlSystem::getLastErrorString() << endl;
+        cerr << "output tensor is null : " << zdl::DlSystem::getLastErrorString() << endl;
         return -1;
     }
     auto itensor_shape = itensor->getShape();
